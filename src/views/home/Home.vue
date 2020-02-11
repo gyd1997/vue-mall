@@ -33,6 +33,7 @@
   import HomeFeature from './childCpn/HomeFeature'
 
   import { getHomeMultiData, getHomeGoodsData } from 'network/home'
+  import  { debounce } from "common/utils";
 
   export default {
     name: 'Home',
@@ -64,6 +65,12 @@
       this.getHomeGoodsData('pop')
       this.getHomeGoodsData('new')
       this.getHomeGoodsData('sell')
+    },
+    mounted() {
+      const refresh = debounce(this.$refs.scroll.refresh, 300)
+      this.$bus.$on('imgLoad', () => {
+        refresh()
+      })
     },
     methods: {
       tabClick(index) {
