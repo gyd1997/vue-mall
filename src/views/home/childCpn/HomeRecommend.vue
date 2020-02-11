@@ -30,6 +30,7 @@
     font-size: 14px;
     padding: 12px 0 20px;
     border-bottom: 10px solid #eee;
+    background-color: #fff;
   }
   .rcmd-item {
     flex: 1;

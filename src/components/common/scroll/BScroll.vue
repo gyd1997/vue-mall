@@ -26,7 +26,7 @@
       }
     },
     methods: {
-      backTop(x, y, time=500) {
+      scrollTo(x, y, time=500) {
         this.scroll && this.scroll.scrollTo(x, y, time)
       },
       finishPullUp() {

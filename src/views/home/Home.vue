@@ -1,22 +1,28 @@
 <template>
   <div id="home">
-    <navbar class="navbar"><div slot="center">购物街</div></navbar>
-    <b-scroll class="content"
-              ref="scroll"
-              :probe-type="3"
-              :pull-up-load="true"
-              @scroll="contentScroll"
-              @pullingUp="getMore">
-      <home-swiper :banners="banners"/>
-      <home-recommend :recommends="recommends"></home-recommend>
-      <home-feature></home-feature>
+      <navbar class="navbar"><div slot="center">购物街</div></navbar>
       <tab-control class="tab-control"
-                    :titles="['流行', '新款', '精选']"
-                    @tabClick="tabClick"
+                   :titles="['流行', '新款', '精选']"
+                   @tabClick="tabClick"
+                   ref="tabControl2"
+                   v-show="showTab"
       ></tab-control>
-      <goods-list :goodslist="showGoods"></goods-list>
-    </b-scroll>
-    <back-top @click.native="backClick" v-show="showBackTop"/>
+      <b-scroll class="content"
+                ref="scroll"
+                :probe-type="3"
+                :pull-up-load="true"
+                @scroll="contentScroll"
+                @pullingUp="getMore">
+        <home-swiper :banners="banners"/>
+        <home-recommend :recommends="recommends"></home-recommend>
+        <home-feature></home-feature>
+        <tab-control :titles="['流行', '新款', '精选']"
+                      @tabClick="tabClick"
+                     ref="tabControl1"
+        ></tab-control>
+        <goods-list :goodslist="showGoods"></goods-list>
+      </b-scroll>
+      <back-top @click.native="backClick" v-show="showBackTop"/>
   </div>
 </template>
 
@@ -57,7 +63,10 @@
           'sell': {page: 0, list: []}
         },
         currentType: 'pop',
-        showBackTop: false
+        showBackTop: false,
+        tabOffsetTop: 0,
+        showTab: false,
+        saveY: 0
       }
     },
     created () {
@@ -72,6 +81,17 @@
         refresh()
       })
     },
+    updated() {
+      this.tabOffsetTop = this.$refs.tabControl1.$el.offsetTop
+    },
+    activated() {
+      this.$refs.scroll.scrollTo(0, this.saveY, 0)
+      this.$refs.scroll.refresh()
+    },
+    deactivated() {
+      this.saveY = this.$refs.scroll.scroll.y
+
+    },
     methods: {
       tabClick(index) {
         switch(index) {
@@ -85,12 +105,15 @@
             this.currentType = 'sell'
             break
         }
+        this.$refs.tabControl1.currentIndex = index
+        this.$refs.tabControl2.currentIndex = index
       },
       backClick() {
-        this.$refs.scroll.backTop(0, 0)
+        this.$refs.scroll.scrollTo(0, 0)
       },
       contentScroll(position) {
         this.showBackTop = (-position.y) > 1000
+        this.showTab = (-position.y) > this.tabOffsetTop
       },
       getMore() {
         this.getHomeGoodsData(this.currentType)
@@ -122,24 +145,24 @@
 
 <style scoped>
   #home {
-    padding-top: 44px;
+    position: relative;
   }
   .navbar {
     background-color: var(--color-tint);
     color: var(--color-background);
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 9;
-  }
-  .tab-control {
-    position: sticky;
-    top: 44px;
     z-index: 9;
   }
   .content {
     height: calc(100vh - 93px);
     overflow: hidden;
+    position: absolute;
+    top: 44px;
+    bottom: 49px;
+    left: 0;
+    right: 0;
+  }
+  .tab-control {
+    position: relative;
+    z-index: 1;
   }
 </style>
