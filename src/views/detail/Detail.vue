@@ -1,10 +1,11 @@
 <template>
   <div id="detail">
     <detail-navbar class="detail-navbar"/>
-    <b-scroll class="detail-content">
+    <b-scroll class="detail-content" ref="scroll">
       <detail-swiper :topImgs="topImgs"/>
       <detail-base-info :goods="goods"/>
       <detail-shop-info :shop="shop"/>
+      <detail-goods-info :detailInfo="detailInfo" @imgLoad="imgLoad"/>
     </b-scroll>
   </div>
 </template>
@@ -15,6 +16,7 @@
   import DetailNavbar from './chidCpn/DetailNavbar'
   import DetailBaseInfo from './chidCpn/DetailBaseInfo'
   import DetailShopInfo from './chidCpn/DetailShopInfo'
+  import DetailGoodsInfo from './chidCpn/DetailGoodsInfo'
   import { getDetail, Goods, Shop } from "network/detail"
 
   export default {
@@ -24,7 +26,8 @@
         iid: null,
         topImgs: [],
         goods: {},
-        shop: {}
+        shop: {},
+        detailInfo: {}
       }
     },
     created() {
@@ -36,16 +39,25 @@
       DetailNavbar,
       DetailSwiper,
       DetailBaseInfo,
-      DetailShopInfo
+      DetailShopInfo,
+      DetailGoodsInfo
     },
     methods: {
+      imgLoad() {
+        this.$refs.scroll.refresh()
+      },
       // 网络请求
       getDetail(iid) {
         getDetail(iid).then(res => {
           const data = res.result
+          // 轮播图
           this.topImgs = data.itemInfo.topImages
+          // 商品数据
           this.goods = new Goods(data.itemInfo, data.columns, data.shopInfo.services)
+          // 店铺信息
           this.shop = new Shop(data.shopInfo)
+          // 商品详细信息
+          this.detailInfo = data.detailInfo
         })
       }
     }
