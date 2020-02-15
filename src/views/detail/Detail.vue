@@ -6,6 +6,8 @@
       <detail-base-info :goods="goods"/>
       <detail-shop-info :shop="shop"/>
       <detail-goods-info :detailInfo="detailInfo" @imgLoad="imgLoad"/>
+      <detail-param-info :param-info="paramInfo"/>
+      <detail-comment-info :comment-info="commentInfo"/>
     </b-scroll>
   </div>
 </template>
@@ -17,7 +19,9 @@
   import DetailBaseInfo from './chidCpn/DetailBaseInfo'
   import DetailShopInfo from './chidCpn/DetailShopInfo'
   import DetailGoodsInfo from './chidCpn/DetailGoodsInfo'
-  import { getDetail, Goods, Shop } from "network/detail"
+  import DetailParamInfo from './chidCpn/DetailParamInfo'
+  import DetailCommentInfo from './chidCpn/DetailCommentInfo'
+  import { getDetail, Goods, Shop, GoodsParam } from "network/detail"
 
   export default {
     name: "Detail",
@@ -27,7 +31,9 @@
         topImgs: [],
         goods: {},
         shop: {},
-        detailInfo: {}
+        detailInfo: {},
+        paramInfo: {},
+        commentInfo: {}
       }
     },
     created() {
@@ -40,7 +46,9 @@
       DetailSwiper,
       DetailBaseInfo,
       DetailShopInfo,
-      DetailGoodsInfo
+      DetailGoodsInfo,
+      DetailParamInfo,
+      DetailCommentInfo
     },
     methods: {
       imgLoad() {
@@ -58,6 +66,12 @@
           this.shop = new Shop(data.shopInfo)
           // 商品详细信息
           this.detailInfo = data.detailInfo
+          // 商品参数信息
+          this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule)
+          // 评论信息
+          if (data.rate.list) {
+            this.commentInfo = data.rate.list[0]
+          }
         })
       }
     }
