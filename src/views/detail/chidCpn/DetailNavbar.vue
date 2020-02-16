@@ -31,6 +31,7 @@
     methods: {
       titleClick(index) {
         this.currentIndex = index
+        this.$emit('navbarClick', index)
       },
       backClick() {
         this.$router.back()
