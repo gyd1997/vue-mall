@@ -15,6 +15,8 @@
       <detail-comment-info ref="comment" :comment-info="commentInfo"/>
       <goods-list ref="recommend" :goodslist="recommendList"/>
     </b-scroll>
+    <detail-bottom-bar/>
+    <back-top @click.native="backClick" v-show="showBackTop"/>
   </div>
 </template>
 
@@ -28,8 +30,9 @@
   import DetailGoodsInfo from './chidCpn/DetailGoodsInfo'
   import DetailParamInfo from './chidCpn/DetailParamInfo'
   import DetailCommentInfo from './chidCpn/DetailCommentInfo'
+  import DetailBottomBar from './chidCpn/DetailBottomBar'
   import { getDetail, Goods, Shop, GoodsParam, getRecommend } from "network/detail"
-  import { itemListenerMixin } from "common/mixin"
+  import { itemListenerMixin, backTopMixin } from "common/mixin"
   import { debounce } from "common/utils"
 
   export default {
@@ -49,7 +52,7 @@
         currentIndex: 0
       }
     },
-    mixins: [itemListenerMixin],
+    mixins: [itemListenerMixin, backTopMixin],
     created() {
       this.iid = this.$route.params.iid
       this.getDetail(this.iid)
@@ -75,7 +78,8 @@
       DetailShopInfo,
       DetailGoodsInfo,
       DetailParamInfo,
-      DetailCommentInfo
+      DetailCommentInfo,
+      DetailBottomBar
     },
     methods: {
       // 商品信息加载完成后刷新
@@ -95,6 +99,7 @@
             this.$refs.nav.currentIndex = this.currentIndex
           }
         }
+        this.showBackTop = (-position.y) > 1000
       },
       // 网络请求
       getDetail(iid) {
@@ -137,6 +142,6 @@
     background-color: #fff;
   }
   .detail-content {
-    height: calc(100vh - 44px);
+    height: calc(100vh - 44px - 58px);
   }
 </style>

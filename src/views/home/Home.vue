@@ -32,14 +32,13 @@
 
   import TabControl from 'components/content/TabControl/TabControl'
   import GoodsList from 'components/content/Goods/GoodsList'
-  import BackTop from 'components/content/BackTop/BackTop'
 
   import HomeSwiper from './childCpn/HomeSwiper'
   import HomeRecommend from './childCpn/HomeRecommend'
   import HomeFeature from './childCpn/HomeFeature'
 
   import { getHomeMultiData, getHomeGoodsData } from 'network/home'
-  import { itemListenerMixin } from "common/mixin"
+  import { itemListenerMixin, backTopMixin } from "common/mixin"
 
   export default {
     name: 'Home',
@@ -47,7 +46,6 @@
       Navbar,
       TabControl,
       GoodsList,
-      BackTop,
       HomeSwiper,
       HomeRecommend,
       HomeFeature,
@@ -63,13 +61,12 @@
           'sell': {page: 0, list: []}
         },
         currentType: 'pop',
-        showBackTop: false,
         tabOffsetTop: 0,
         showTab: false,
         saveY: 0
       }
     },
-    mixins: [itemListenerMixin],
+    mixins: [itemListenerMixin, backTopMixin],
     created () {
       this.getHomeMultiData()
       this.getHomeGoodsData('pop')
@@ -102,9 +99,6 @@
         }
         this.$refs.tabControl1.currentIndex = index
         this.$refs.tabControl2.currentIndex = index
-      },
-      backClick() {
-        this.$refs.scroll.scrollTo(0, 0)
       },
       contentScroll(position) {
         this.showBackTop = (-position.y) > 1000
