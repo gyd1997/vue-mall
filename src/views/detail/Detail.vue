@@ -5,14 +5,16 @@
       <detail-swiper :topImgs="topImgs"/>
       <detail-base-info :goods="goods"/>
       <detail-shop-info :shop="shop"/>
-      <detail-goods-info :detailInfo="detailInfo" @imgLoad="imgLoad"/>
+      <detail-goods-info :detailInfo="detailInfo" @goodsInfoLoad="goodsInfoLoad"/>
       <detail-param-info :param-info="paramInfo"/>
       <detail-comment-info :comment-info="commentInfo"/>
+      <goods-list :goodslist="recommendList"/>
     </b-scroll>
   </div>
 </template>
 
 <script>
+  import GoodsList from 'components/content/Goods/GoodsList'
   import BScroll from 'components/common/scroll/BScroll'
   import DetailSwiper from './chidCpn/DetailSwiper'
   import DetailNavbar from './chidCpn/DetailNavbar'
@@ -21,7 +23,8 @@
   import DetailGoodsInfo from './chidCpn/DetailGoodsInfo'
   import DetailParamInfo from './chidCpn/DetailParamInfo'
   import DetailCommentInfo from './chidCpn/DetailCommentInfo'
-  import { getDetail, Goods, Shop, GoodsParam } from "network/detail"
+  import { getDetail, Goods, Shop, GoodsParam, getRecommend } from "network/detail"
+  import { itemListenerMixin } from "common/mixin"
 
   export default {
     name: "Detail",
@@ -33,14 +36,21 @@
         shop: {},
         detailInfo: {},
         paramInfo: {},
-        commentInfo: {}
+        commentInfo: {},
+        recommendList: []
       }
     },
+    mixins: [itemListenerMixin],
     created() {
       this.iid = this.$route.params.iid
       this.getDetail(this.iid)
+      this.getRecommend()
+    },
+    destroyed() {
+      this.$bus.$off('imgLoad', this.itemImgListener)
     },
     components: {
+      GoodsList,
       BScroll,
       DetailNavbar,
       DetailSwiper,
@@ -51,7 +61,7 @@
       DetailCommentInfo
     },
     methods: {
-      imgLoad() {
+      goodsInfoLoad() {
         this.$refs.scroll.refresh()
       },
       // 网络请求
@@ -72,6 +82,11 @@
           if (data.rate.list) {
             this.commentInfo = data.rate.list[0]
           }
+        })
+      },
+      getRecommend(){
+        getRecommend().then(res => {
+          this.recommendList = res.data.list
         })
       }
     }

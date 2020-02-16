@@ -39,7 +39,7 @@
   import HomeFeature from './childCpn/HomeFeature'
 
   import { getHomeMultiData, getHomeGoodsData } from 'network/home'
-  import  { debounce } from "common/utils";
+  import { itemListenerMixin } from "common/mixin"
 
   export default {
     name: 'Home',
@@ -69,17 +69,12 @@
         saveY: 0
       }
     },
+    mixins: [itemListenerMixin],
     created () {
       this.getHomeMultiData()
       this.getHomeGoodsData('pop')
       this.getHomeGoodsData('new')
       this.getHomeGoodsData('sell')
-    },
-    mounted() {
-      const refresh = debounce(this.$refs.scroll.refresh, 300)
-      this.$bus.$on('imgLoad', () => {
-        refresh()
-      })
     },
     updated() {
       this.tabOffsetTop = this.$refs.tabControl1.$el.offsetTop
@@ -90,6 +85,7 @@
     },
     deactivated() {
       this.saveY = this.$refs.scroll.scroll.y
+      this.$bus.$off('imgLoad', this.itemImgListener)
     },
     methods: {
       tabClick(index) {

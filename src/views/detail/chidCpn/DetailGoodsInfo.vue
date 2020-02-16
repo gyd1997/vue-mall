@@ -11,7 +11,7 @@
       <img v-for="(item, index) in detailInfo.detailImage[0].list"
            :key="index"
            :src="item"
-           @load="imgLoad">
+           @load="goodsInfoLoad">
     </div>
   </div>
 </template>
@@ -34,10 +34,10 @@
       }
     },
     methods: {
-      imgLoad() {
+      goodsInfoLoad() {
         // 判断，所有的图片都加载完了之后进行一次回调
         if (++this.counter === this.imgsLength) {
-          this.$emit('imgLoad')
+          this.$emit('goodsInfoLoad')
         }
       }
     },
