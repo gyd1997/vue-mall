@@ -132,7 +132,7 @@
           }
         })
       },
-      getRecommend(){
+      getRecommend() {
         getRecommend().then(res => {
           this.recommendList = res.data.list
         })
