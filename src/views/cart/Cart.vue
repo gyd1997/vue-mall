@@ -3,16 +3,20 @@
     <navbar class="navbar">
       <div slot="center">购物车({{cartLength}})</div>
     </navbar>
+    <cart-list/>
   </div>
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import Navbar from 'components/common/navbar/Navbar'
+  import CartList from './childCpn/CartList'
 
   export default {
     name: 'Cart',
     components: {
-      Navbar
+      Navbar,
+      CartList
     },
     computed: {
       ...mapGetters(['cartLength'])
