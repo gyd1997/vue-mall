@@ -1,10 +1,10 @@
 <template>
   <div class="cart-list">
-    <b-scroll class="content">
+    <b-scroll class="content" ref="scroll">
       <cart-list-item
         v-for="(item, index) of cartList"
         :key="index"
-        :product="item"
+        :itemInfo="item"
       />
     </b-scroll>
   </div>
@@ -22,6 +22,9 @@
     components: {
       BScroll,
       CartListItem
+    },
+    activated() {
+      this.$refs.scroll.refresh()
     }
   }
 </script>
