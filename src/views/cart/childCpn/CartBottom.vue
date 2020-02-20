@@ -1,7 +1,10 @@
 <template>
   <div class="bottom-bar">
     <div class="button-zone">
-      <check-button class="check-button"/>
+      <check-button
+        class="check-button"
+        :is-checked="isSelectorAll"
+        @click.native="checkClick"/>
       <span>全选</span>
     </div>
     <div class="total-price">合计：￥{{totalPrice}}</div>
@@ -26,6 +29,19 @@
       },
       checkLength() {
         return this.$store.getters.cartList.filter(item => item.checked).length
+      },
+      isSelectorAll() {
+        if (this.$store.getters.cartList.length === 0) return false
+        return !this.$store.getters.cartList.find(item => !item.checked)
+      }
+    },
+    methods: {
+      checkClick() {
+        if(this.isSelectorAll) {
+          this.$store.getters.cartList.forEach(item => item.checked = false)
+        } else {
+          this.$store.getters.cartList.forEach(item => item.checked = true)
+        }
       }
     }
   }
