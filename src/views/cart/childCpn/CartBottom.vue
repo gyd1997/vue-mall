@@ -8,7 +8,7 @@
       <span>全选</span>
     </div>
     <div class="total-price">合计：￥{{totalPrice}}</div>
-    <div class="calculate">去结算：({{checkLength}})</div>
+    <div class="calculate" @click="calcClick">去结算：({{checkLength}})</div>
   </div>
 </template>
 
@@ -41,6 +41,12 @@
           this.$store.getters.cartList.forEach(item => item.checked = false)
         } else {
           this.$store.getters.cartList.forEach(item => item.checked = true)
+        }
+      },
+      calcClick() {
+        if(!this.isSelectorAll) {
+          this.$toast.show('请选择购买的商品')
+          
         }
       }
     }

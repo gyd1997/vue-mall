@@ -34,6 +34,7 @@
   import { getDetail, Goods, Shop, GoodsParam, getRecommend } from "network/detail"
   import { itemListenerMixin, backTopMixin } from "common/mixin"
   import { debounce } from "common/utils"
+  import { mapActions } from 'vuex'
 
   export default {
     name: "Detail",
@@ -82,6 +83,7 @@
       DetailBottomBar
     },
     methods: {
+      ...mapActions(['addCart']),
       // 商品信息加载完成后刷新
       goodsInfoLoad() {
         this.$refs.scroll.refresh()
@@ -110,7 +112,12 @@
         product.price = this.goods.realPrice
         product.iid = this.iid
 
-        this.$store.dispatch('addCart', product)
+        this.addCart(product).then(res => {
+          this.$toast.show(res)
+        })
+        /*this.$store.dispatch('addCart', product).then(res => {
+          console.log(res)
+        })*/
       },
       // 网络请求
       getDetail(iid) {
